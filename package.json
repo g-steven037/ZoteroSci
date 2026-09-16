@@ -21,14 +21,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xupei/zotero-science.git"
+    "url": "git+https://github.com/g-steven037/ZoteroSci.git"
   },
   "author": "windingwind",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/xupei/zotero-science/issues"
+    "url": "https://github.com/g-steven037/ZoteroSci/issues"
   },
-  "homepage": "https://github.com/xupei/zotero-science#readme",
+  "homepage": "https://github.com/g-steven037/ZoteroSci#readme",
   "dependencies": {
     "franc": "^6.2.0",
     "iso639-js": "^1.1.3",
