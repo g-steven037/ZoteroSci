@@ -24,6 +24,8 @@ export type FluentMessageId =
   | 'itemPaneSection-header'
   | 'itemPaneSection-openStandalone'
   | 'itemPaneSection-sidenav'
+  | 'itemmenu-queryPublicationRank'
+  | 'itemmenu-refreshPublicationRank'
   | 'itemmenu-translateAbstract'
   | 'itemmenu-translateTitle'
   | 'pin-window'

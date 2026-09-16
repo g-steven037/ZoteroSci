@@ -5,6 +5,24 @@ import {
   addTranslateTitleTask,
   TranslateTask,
 } from "../utils/task";
+import { getEasyScholarSecret } from "./easyScholar";
+import { queryItemsPublicationRank as queryRankItems } from "./easyScholarFields";
+
+async function querySelectedPublicationRanks(items: Zotero.Item[], force = false) {
+  if (!getEasyScholarSecret()) {
+    new ztoolkit.ProgressWindow("ZoteroSci")
+      .createLine({ text: "Please configure the EasyScholar SecretKey in Preferences." })
+      .show();
+    return;
+  }
+  const counts = await queryRankItems(items as any, { force });
+  new ztoolkit.ProgressWindow("ZoteroSci")
+    .createLine({
+      text: `EasyScholar: ${counts.saved} saved, ${counts.skipped} skipped, ${counts.failed} failed.`,
+      progress: 100,
+    })
+    .show();
+}
 
 export function registerMenu() {
   const menuIcon = `chrome://${config.addonRef}/content/icons/favicon.png`;
@@ -59,6 +77,41 @@ export function registerMenu() {
               getPref("showItemMenuAbstractTranslation") &&
               context.items?.every((item) => item.isRegularItem())
             ),
+          );
+        },
+      },
+      {
+        menuType: "menuitem",
+        l10nID: `${config.addonRef}-itemmenu-queryPublicationRank`,
+        icon: menuIcon,
+        onCommand: (_event, context) => {
+          if (context.items?.length) {
+            void querySelectedPublicationRanks(context.items as Zotero.Item[]);
+          }
+        },
+        onShowing: (_event, context) => {
+          context.setVisible(
+            !!context.items?.length &&
+              context.items.every((item) => item.isRegularItem()),
+          );
+        },
+      },
+      {
+        menuType: "menuitem",
+        l10nID: `${config.addonRef}-itemmenu-refreshPublicationRank`,
+        icon: menuIcon,
+        onCommand: (_event, context) => {
+          if (context.items?.length) {
+            void querySelectedPublicationRanks(
+              context.items as Zotero.Item[],
+              true,
+            );
+          }
+        },
+        onShowing: (_event, context) => {
+          context.setVisible(
+            !!context.items?.length &&
+              context.items.every((item) => item.isRegularItem()),
           );
         },
       },

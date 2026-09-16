@@ -168,6 +168,8 @@ field-easyScholarRank=Journal Rank
 field-easyScholarIF=Impact Factor
 field-easyScholarIF5=5-Year Impact Factor
 field-easyScholarUpdatedAt=EasyScholar Updated
+itemmenu-queryPublicationRank=Query Journal Rank
+itemmenu-refreshPublicationRank=Refresh Journal Rank
 
 status-translating=Translating...
 sideBarIcon-title=Translate annotation
