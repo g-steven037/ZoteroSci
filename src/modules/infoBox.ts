@@ -73,9 +73,12 @@ function registerItemPaneInfoRows() {
       pluginID: addon.data.config.addonID,
       label: { l10nID: `${addon.data.config.addonRef}-${l10nID}` },
       onGetData: (options) => {
-        const value = ztoolkit.ExtraField.getExtraField(options.item, rowID) || "";
+        const value =
+          ztoolkit.ExtraField.getExtraField(options.item, rowID) || "";
         if (rowID === "easyScholarRank") {
-          const impact = ztoolkit.ExtraField.getExtraField(options.item, "easyScholarIF") || "";
+          const impact =
+            ztoolkit.ExtraField.getExtraField(options.item, "easyScholarIF") ||
+            "";
           return formatCompactPublicationRank(value, impact)
             .filter((chip) => chip.className !== "if")
             .map((chip) => chip.text)

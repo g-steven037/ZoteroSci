@@ -90,7 +90,10 @@ describe("EasyScholar publication rank parser", function () {
 
     assert.deepEqual(firstResult, secondResult);
     assert.equal(calls, 1);
-    assert.equal((await queryPublicationRank("Journal & Reports"))?.impactFactor, "8.2");
+    assert.equal(
+      (await queryPublicationRank("Journal & Reports"))?.impactFactor,
+      "8.2",
+    );
     assert.equal(calls, 1);
   });
 
@@ -122,10 +125,7 @@ describe("EasyScholar publication rank parser", function () {
 
   it("formats the compact rank in the requested order", function () {
     assert.deepEqual(
-      formatCompactPublicationRank(
-        "SCI Q2 | 中科院基础版 工程技术2区",
-        "5.8",
-      ),
+      formatCompactPublicationRank("SCI Q2 | 中科院基础版 工程技术2区", "5.8"),
       [
         { text: "中科院2区", className: "cas-2" },
         { text: "SCI Q2", className: "sci-q2" },
@@ -133,6 +133,9 @@ describe("EasyScholar publication rank parser", function () {
       ],
     );
     assert.equal(getPublicationRankChipClass("SCI Q1"), "sci-q1");
-    assert.equal(getPublicationRankChipClass("中科院基础版 工程技术2区"), "cas-2");
+    assert.equal(
+      getPublicationRankChipClass("中科院基础版 工程技术2区"),
+      "cas-2",
+    );
   });
 });

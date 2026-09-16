@@ -1,7 +1,4 @@
-import {
-  PublicationRankResult,
-  queryPublicationRank,
-} from "./easyScholar";
+import { PublicationRankResult, queryPublicationRank } from "./easyScholar";
 
 export const EASY_SCHOLAR_RANK_FIELD = "easyScholarRank";
 export const EASY_SCHOLAR_IF_FIELD = "easyScholarIF";
@@ -9,11 +6,7 @@ export const EASY_SCHOLAR_IF5_FIELD = "easyScholarIF5";
 export const EASY_SCHOLAR_PUBLICATION_FIELD = "easyScholarPublication";
 export const EASY_SCHOLAR_UPDATED_AT_FIELD = "easyScholarUpdatedAt";
 
-export type PublicationQueryOutcome =
-  | "saved"
-  | "cached"
-  | "skipped"
-  | "failed";
+export type PublicationQueryOutcome = "saved" | "cached" | "skipped" | "failed";
 
 export interface PublicationRankChip {
   text: string;
@@ -42,7 +35,8 @@ export function formatCompactPublicationRank(
   const chips: PublicationRankChip[] = [];
   const cas = getCompactCasRank(rank);
   const sci = rank.match(/\bSCI\s+Q([1-4])\b/i);
-  if (cas) chips.push({ text: cas, className: getPublicationRankChipClass(cas) });
+  if (cas)
+    chips.push({ text: cas, className: getPublicationRankChipClass(cas) });
   if (sci) chips.push({ text: `SCI Q${sci[1]}`, className: `sci-q${sci[1]}` });
   const impact = impactFactor.trim();
   if (impact) chips.push({ text: `IF ${impact}`, className: "if" });
@@ -66,9 +60,13 @@ export interface QueryItemOptions {
   setExtra?: (key: string, value: string) => void;
 }
 
-export function getPublicationName(item: PublicationItem | false | null | undefined): string {
+export function getPublicationName(
+  item: PublicationItem | false | null | undefined,
+): string {
   if (!item) return "";
-  const publicationTitle = String(item.getField("publicationTitle") ?? "").trim();
+  const publicationTitle = String(
+    item.getField("publicationTitle") ?? "",
+  ).trim();
   if (publicationTitle) return publicationTitle;
   return String(item.getField("journalAbbreviation") ?? "").trim();
 }
@@ -76,7 +74,11 @@ export function getPublicationName(item: PublicationItem | false | null | undefi
 export function isEligiblePublicationItem(
   item: PublicationItem | false | null | undefined,
 ): item is PublicationItem {
-  if (!item || typeof item.isRegularItem !== "function" || !item.isRegularItem()) {
+  if (
+    !item ||
+    typeof item.isRegularItem !== "function" ||
+    !item.isRegularItem()
+  ) {
     return false;
   }
   if (
@@ -90,7 +92,11 @@ export function isEligiblePublicationItem(
   return !!getPublicationName(item);
 }
 
-function defaultSetExtra(item: PublicationItem, key: string, value: string): void {
+function defaultSetExtra(
+  item: PublicationItem,
+  key: string,
+  value: string,
+): void {
   addon.data.ztoolkit.ExtraField.setExtraField(
     item as unknown as Zotero.Item,
     key,
@@ -110,7 +116,8 @@ export async function queryItemPublicationRank(
 
   const currentPublication = getPublicationName(item);
   if (currentPublication !== publication) return "skipped";
-  const setExtra = options.setExtra || ((key, value) => defaultSetExtra(item, key, value));
+  const setExtra =
+    options.setExtra || ((key, value) => defaultSetExtra(item, key, value));
   setExtra(EASY_SCHOLAR_RANK_FIELD, result.rank);
   setExtra(EASY_SCHOLAR_IF_FIELD, result.impactFactor);
   setExtra(EASY_SCHOLAR_IF5_FIELD, result.impactFactor5);
@@ -123,8 +130,20 @@ export async function queryItemPublicationRank(
 export async function queryItemsPublicationRank(
   items: Array<PublicationItem | false>,
   options: QueryItemOptions = {},
-): Promise<{ total: number; saved: number; cached: number; skipped: number; failed: number }> {
-  const counts = { total: items.length, saved: 0, cached: 0, skipped: 0, failed: 0 };
+): Promise<{
+  total: number;
+  saved: number;
+  cached: number;
+  skipped: number;
+  failed: number;
+}> {
+  const counts = {
+    total: items.length,
+    saved: 0,
+    cached: 0,
+    skipped: 0,
+    failed: 0,
+  };
   for (const item of items) {
     const result = await queryItemPublicationRank(item, options);
     counts[result] += 1;
@@ -132,7 +151,10 @@ export async function queryItemsPublicationRank(
   return counts;
 }
 
-const pendingPublicationLookups = new Map<number, ReturnType<typeof setTimeout>>();
+const pendingPublicationLookups = new Map<
+  number,
+  ReturnType<typeof setTimeout>
+>();
 
 export function scheduleItemPublicationRank(itemID: number): void {
   if (pendingPublicationLookups.has(itemID)) return;
