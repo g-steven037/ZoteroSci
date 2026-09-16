@@ -9,6 +9,10 @@ itemPaneSection-openStandalone =
 
 field-titleTranslation = Chinese Title
 field-abstractTranslation = Abstract Translation
+field-easyScholarRank = Journal Rank
+field-easyScholarIF = Impact Factor
+field-easyScholarIF5 = 5-Year Impact Factor
+field-easyScholarUpdatedAt = EasyScholar Updated
 
 itemmenu-translateTitle =
     .label = Translate Title

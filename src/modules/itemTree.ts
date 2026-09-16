@@ -6,14 +6,20 @@ export function registerExtraColumns() {
   const registerColumn =
     Zotero.ItemTreeManager.registerColumn ||
     Zotero.ItemTreeManager.registerColumns;
-  registerColumn.apply(Zotero.ItemTreeManager, [
-    {
+  registerColumn.call(Zotero.ItemTreeManager, {
       dataKey: "titleTranslation",
       label: getString("field-titleTranslation"),
       dataProvider: (item, dataKey) =>
         ztoolkit.ExtraField.getExtraField(item, "titleTranslation") || "",
       pluginID: config.addonID,
       zoteroPersist: ["width", "hidden", "sortDirection"],
-    },
-  ]);
+    });
+  registerColumn.call(Zotero.ItemTreeManager, {
+      dataKey: "easyScholarRank",
+      label: getString("field-easyScholarRank"),
+      dataProvider: (item: Zotero.Item) =>
+        ztoolkit.ExtraField.getExtraField(item, "easyScholarRank") || "",
+      pluginID: config.addonID,
+      zoteroPersist: ["width", "hidden", "sortDirection"],
+    });
 }

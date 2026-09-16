@@ -59,4 +59,22 @@ function registerItemPaneInfoRows() {
       multiline: true,
     });
   }
+
+  const easyScholarRows = [
+    ["easyScholarRank", "field-easyScholarRank"],
+    ["easyScholarIF", "field-easyScholarIF"],
+    ["easyScholarIF5", "field-easyScholarIF5"],
+    ["easyScholarUpdatedAt", "field-easyScholarUpdatedAt"],
+  ] as const;
+  for (const [rowID, l10nID] of easyScholarRows) {
+    Zotero.ItemPaneManager.registerInfoRow({
+      rowID,
+      pluginID: addon.data.config.addonID,
+      label: { l10nID: `${addon.data.config.addonRef}-${l10nID}` },
+      onGetData: (options) =>
+        ztoolkit.ExtraField.getExtraField(options.item, rowID) || "",
+      position: "afterCreators",
+      editable: false,
+    });
+  }
 }

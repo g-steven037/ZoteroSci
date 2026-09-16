@@ -164,6 +164,10 @@ pref-title=翻译
 
 field-titleTranslation=中文标题
 field-abstractTranslation=摘要翻译
+field-easyScholarRank=期刊分区
+field-easyScholarIF=影响因子
+field-easyScholarIF5=五年影响因子
+field-easyScholarUpdatedAt=EasyScholar 更新时间
 
 status-translating=正在翻译...
 sideBarIcon-title=翻译注释

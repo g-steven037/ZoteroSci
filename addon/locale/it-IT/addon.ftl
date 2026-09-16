@@ -164,6 +164,10 @@ pref-title=Translate
 
 field-titleTranslation=Traduzione del titolo
 field-abstractTranslation=Traduzione dell'Abstract
+field-easyScholarRank=Journal Rank
+field-easyScholarIF=Impact Factor
+field-easyScholarIF5=5-Year Impact Factor
+field-easyScholarUpdatedAt=EasyScholar Updated
 
 status-translating=Traduzione in corso...
 sideBarIcon-title=Translate annotation
