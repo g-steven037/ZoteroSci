@@ -15,6 +15,40 @@ export type PublicationQueryOutcome =
   | "skipped"
   | "failed";
 
+export interface PublicationRankChip {
+  text: string;
+  className: string;
+}
+
+export function getPublicationRankChipClass(value: string): string {
+  const text = value.trim();
+  const sci = text.match(/\bSCI\s+Q([1-4])\b/i);
+  if (sci) return `sci-q${sci[1]}`;
+  const cas = text.match(/中科院[^|]*?([1-4])区/);
+  if (cas) return `cas-${cas[1]}`;
+  if (/^IF\s+/i.test(text)) return "if";
+  return "rank-other";
+}
+
+function getCompactCasRank(rank: string): string {
+  const match = rank.match(/中科院[^|]*?([1-4])区/);
+  return match ? `中科院${match[1]}区` : "";
+}
+
+export function formatCompactPublicationRank(
+  rank: string,
+  impactFactor: string,
+): PublicationRankChip[] {
+  const chips: PublicationRankChip[] = [];
+  const cas = getCompactCasRank(rank);
+  const sci = rank.match(/\bSCI\s+Q([1-4])\b/i);
+  if (cas) chips.push({ text: cas, className: getPublicationRankChipClass(cas) });
+  if (sci) chips.push({ text: `SCI Q${sci[1]}`, className: `sci-q${sci[1]}` });
+  const impact = impactFactor.trim();
+  if (impact) chips.push({ text: `IF ${impact}`, className: "if" });
+  return chips;
+}
+
 export interface PublicationItem {
   id: number;
   parentID?: number | null | false;

@@ -10,6 +10,8 @@ import {
   getPublicationName,
   isEligiblePublicationItem,
   queryItemPublicationRank,
+  formatCompactPublicationRank,
+  getPublicationRankChipClass,
 } from "../src/modules/easyScholarFields";
 
 describe("EasyScholar publication rank parser", function () {
@@ -116,5 +118,21 @@ describe("EasyScholar publication rank parser", function () {
     });
     assert.equal(extras.get("easyScholarRank"), "SCI Q1");
     assert.equal(extras.get("easyScholarIF"), "42.0");
+  });
+
+  it("formats the compact rank in the requested order", function () {
+    assert.deepEqual(
+      formatCompactPublicationRank(
+        "SCI Q2 | 中科院基础版 工程技术2区",
+        "5.8",
+      ),
+      [
+        { text: "中科院2区", className: "cas-2" },
+        { text: "SCI Q2", className: "sci-q2" },
+        { text: "IF 5.8", className: "if" },
+      ],
+    );
+    assert.equal(getPublicationRankChipClass("SCI Q1"), "sci-q1");
+    assert.equal(getPublicationRankChipClass("中科院基础版 工程技术2区"), "cas-2");
   });
 });

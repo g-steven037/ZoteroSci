@@ -1,4 +1,5 @@
 import { getPref } from "../utils/prefs";
+import { formatCompactPublicationRank } from "./easyScholarFields";
 
 export { registerItemPaneInfoRows };
 
@@ -71,8 +72,17 @@ function registerItemPaneInfoRows() {
       rowID,
       pluginID: addon.data.config.addonID,
       label: { l10nID: `${addon.data.config.addonRef}-${l10nID}` },
-      onGetData: (options) =>
-        ztoolkit.ExtraField.getExtraField(options.item, rowID) || "",
+      onGetData: (options) => {
+        const value = ztoolkit.ExtraField.getExtraField(options.item, rowID) || "";
+        if (rowID === "easyScholarRank") {
+          const impact = ztoolkit.ExtraField.getExtraField(options.item, "easyScholarIF") || "";
+          return formatCompactPublicationRank(value, impact)
+            .filter((chip) => chip.className !== "if")
+            .map((chip) => chip.text)
+            .join("，");
+        }
+        return value;
+      },
       position: "afterCreators",
       editable: false,
     });
