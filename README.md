@@ -1,6 +1,3 @@
-# ![ZoteroSci](addon/chrome/content/icons/favicon.png) ZoteroSci
-
-[![Zotero 9](https://img.shields.io/badge/Zotero-9-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
 
 ZoteroSci 是一个面向科研文献管理的 Zotero 插件，基于开源项目 **Zotero PDF Translate** 开发。
 
