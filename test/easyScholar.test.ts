@@ -43,7 +43,7 @@ describe("EasyScholar publication rank parser", function () {
     );
 
     assert.equal(result?.publication, "Journal & Reports");
-    assert.equal(result?.rank, "SCI Q1 | DUFE B");
+    assert.equal(result?.rank, "SCI Q1 | SSCI Q3 | DUFE B");
     assert.equal(result?.impactFactor, "8.2");
     assert.equal(result?.impactFactor5, "9.1");
   });
@@ -63,6 +63,29 @@ describe("EasyScholar publication rank parser", function () {
     assert.isUndefined(
       parsePublicationRankResponse({ code: 40002, data: null }, "Journal"),
     );
+  });
+
+  it("keeps CAS and SCI ranks from all when selected only contains IF", function () {
+    const result = parsePublicationRankResponse(
+      {
+        code: 200,
+        data: {
+          officialRank: {
+            all: {
+              sciif: "5.9",
+              sci: "Q1",
+              sciUp: "材料科学3区",
+            },
+            select: { sciif: "5.9" },
+          },
+          customRank: { rankInfo: [], rank: [] },
+        },
+      },
+      "Journal",
+    );
+
+    assert.equal(result?.rank, "SCI Q1 | 中科院升级版 材料科学3区");
+    assert.equal(result?.impactFactor, "5.9");
   });
 
   it("normalizes equivalent publication names", function () {
