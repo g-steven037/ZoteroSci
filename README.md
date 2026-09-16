@@ -1,10 +1,12 @@
-# ![Translate for Zotero](addon/chrome/content/icons/favicon.png)Translate for Zotero
+# ![ZoteroSci](addon/chrome/content/icons/favicon.png)ZoteroSci
 
 [![zotero target version](https://img.shields.io/badge/Zotero-7/8-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 
-_Translate for Zotero_, a.k.a. _Zotero PDF Translate_, is a [Zotero](https://www.zotero.org/) plugin.  
+_ZoteroSci_ is a [Zotero](https://www.zotero.org/) plugin based on the PDF Translate project.  
 Translate PDF, EPub, webpage, metadata, annotations, notes to the target language. Support 20+ translate services.
+
+ZoteroSci can query EasyScholar for journal rank and impact factors. Configure the EasyScholar `SecretKey` in the plugin Preferences. New regular items can be queried automatically, or selected items can be queried from the context menu. Results are stored in Extra fields and shown in the `Journal Rank` list column and item pane. Requests are cached for seven days and limited to two per second.
 
 [中文文档](https://zotero.yuque.com/books/share/4443494c-c698-4e08-9d1e-ed253390346d)
 

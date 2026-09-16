@@ -32,6 +32,7 @@ import {
   scheduleItemPublicationRank,
   shutdownPublicationRankLookups,
 } from "./modules/easyScholarFields";
+import { shutdownEasyScholar } from "./modules/easyScholar";
 
 async function onStartup() {
   await Promise.all([
@@ -118,12 +119,13 @@ async function onMainWindowUnload(win: Window): Promise<void> {
 
 function onShutdown(): void {
   ztoolkit.unregisterAll();
+  shutdownEasyScholar();
+  shutdownPublicationRankLookups();
   Zotero.getMainWindows().forEach((win) => {
     onMainWindowUnload(win);
   });
   // Remove addon object
   addon.data.alive = false;
-  shutdownPublicationRankLookups();
   // @ts-ignore - Plugin instance is not typed
   delete Zotero[config.addonInstance];
 }
