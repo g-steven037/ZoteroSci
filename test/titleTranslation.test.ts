@@ -20,6 +20,7 @@ describe("automatic title translation eligibility", function () {
       getField: (field: string) => field === "title" ? "A paper" : "en-US",
     };
     assert.isTrue(isEligibleNewTitleItem(base));
+    assert.isTrue(isEligibleNewTitleItem({ ...base, parentID: false }));
     assert.isFalse(isEligibleNewTitleItem({ ...base, parentID: 2 }));
     assert.isFalse(isEligibleNewTitleItem({ ...base, isRegularItem: () => false }));
     assert.isFalse(isEligibleNewTitleItem({ ...base, getField: () => "" }));

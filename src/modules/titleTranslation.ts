@@ -9,7 +9,7 @@ export const TITLE_TARGET_LANGUAGE = "zh-CN";
 
 type TitleItem = {
   id: number;
-  parentID?: number | null;
+  parentID?: number | null | false;
   isRegularItem?: () => boolean;
   getField: (field: string) => unknown;
   saveTx?: () => void;
@@ -39,7 +39,13 @@ export function isEligibleNewTitleItem(item: TitleItem | false | null | undefine
   if (!item || typeof item.isRegularItem !== "function" || !item.isRegularItem()) {
     return false;
   }
-  if (item.parentID !== undefined && item.parentID !== null) {
+  // Zotero uses `false` for parentID on top-level items in some code paths.
+  if (
+    item.parentID !== undefined &&
+    item.parentID !== null &&
+    item.parentID !== false &&
+    item.parentID !== 0
+  ) {
     return false;
   }
   return String(item.getField("title") ?? "").trim().length > 0;
@@ -85,7 +91,13 @@ async function translateOne(itemID: number): Promise<void> {
   await new Promise<void>((resolve) => setTimeout(resolve, 300));
   const item = Zotero.Items.get(itemID) as TitleItem | false;
   if (!isEligibleNewTitleItem(item)) {
-    ztoolkit.log("ZoteroSci skipped ineligible new item", itemID);
+    const debugItem = item as TitleItem | false;
+    ztoolkit.log("ZoteroSci skipped ineligible new item", {
+      itemID,
+      parentID: debugItem && debugItem.parentID,
+      isRegular: debugItem && debugItem.isRegularItem?.(),
+      title: debugItem && String(debugItem.getField("title") ?? "").slice(0, 120),
+    });
     return;
   }
 
