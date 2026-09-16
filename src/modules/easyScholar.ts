@@ -135,9 +135,11 @@ export function parsePublicationRankResponse(
   const official = value.data.officialRank;
   const selected = official?.select;
   const all = official?.all;
-  const selectedHasValues =
-    !!selected && Object.values(selected).some((item) => safeText(item));
-  const parsedOfficial = parseOfficialRanks(selectedHasValues ? selected : all);
+  const mergedOfficial = {
+    ...(all || {}),
+    ...(selected || {}),
+  };
+  const parsedOfficial = parseOfficialRanks(mergedOfficial);
   const rank = [...parsedOfficial.rankParts, ...parseCustomRanks(value.data)].join(
     " | ",
   );
