@@ -5,6 +5,12 @@ import {
   getPublicationRankChipClass,
 } from "./easyScholarFields";
 
+export function getPublicationRankColumnOptions() {
+  return {
+    zoteroPersist: ["width", "hidden", "sortDirection"],
+  };
+}
+
 export function registerExtraColumns() {
   // TEMP: Remove after Zotero 7.0.10
   const registerColumn =
@@ -64,9 +70,6 @@ export function registerExtraColumns() {
       return container;
     },
     pluginID: config.addonID,
-    flex: 0,
-    width: "220",
-    minWidth: 180,
-    zoteroPersist: ["width", "hidden", "sortDirection"],
+    ...getPublicationRankColumnOptions(),
   });
 }
