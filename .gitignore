@@ -5,3 +5,7 @@ build/
 .worktrees/
 *.xpi
 *.map
+.env
+.scaffold/
+tsconfig.tsbuildinfo
+pdf-translate-reference/
