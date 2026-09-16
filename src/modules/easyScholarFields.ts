@@ -97,3 +97,37 @@ export async function queryItemsPublicationRank(
   }
   return counts;
 }
+
+const pendingPublicationLookups = new Map<number, ReturnType<typeof setTimeout>>();
+
+export function scheduleItemPublicationRank(itemID: number): void {
+  if (pendingPublicationLookups.has(itemID)) return;
+  let attempts = 0;
+  const run = async () => {
+    pendingPublicationLookups.delete(itemID);
+    const item = Zotero.Items.get(itemID) as PublicationItem | false;
+    if (isEligiblePublicationItem(item)) {
+      try {
+        await queryItemPublicationRank(item);
+      } catch (error) {
+        ztoolkit.log("EasyScholar automatic item query failed", {
+          type: error instanceof Error ? error.name : "unknown",
+        });
+      }
+      return;
+    }
+    attempts += 1;
+    const debugItem = item as PublicationItem | false;
+    if (attempts < 4 && debugItem && debugItem.isRegularItem?.()) {
+      const timer = setTimeout(() => void run(), 500 * attempts);
+      pendingPublicationLookups.set(itemID, timer);
+    }
+  };
+  const timer = setTimeout(() => void run(), 300);
+  pendingPublicationLookups.set(itemID, timer);
+}
+
+export function shutdownPublicationRankLookups(): void {
+  for (const timer of pendingPublicationLookups.values()) clearTimeout(timer);
+  pendingPublicationLookups.clear();
+}

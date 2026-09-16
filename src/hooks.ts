@@ -28,6 +28,10 @@ import { registerItemPaneInfoRows } from "./modules/infoBox";
 import { registerPrompt } from "./modules/prompt";
 import { registerCustomFields } from "./modules/fields";
 import { translateNewTitles } from "./modules/titleTranslation";
+import {
+  scheduleItemPublicationRank,
+  shutdownPublicationRankLookups,
+} from "./modules/easyScholarFields";
 
 async function onStartup() {
   await Promise.all([
@@ -119,6 +123,7 @@ function onShutdown(): void {
   });
   // Remove addon object
   addon.data.alive = false;
+  shutdownPublicationRankLookups();
   // @ts-ignore - Plugin instance is not typed
   delete Zotero[config.addonInstance];
 }
@@ -140,6 +145,9 @@ async function onNotify(
       enabled: getPref("enableAutoTitleTranslation"),
       service: getPref("translateSource"),
     });
+    if (getPref("enableAutoPublicationRank")) {
+      itemIDs.forEach(scheduleItemPublicationRank);
+    }
     await translateNewTitles(itemIDs);
     if (
       !getPref("enableAnnotationFromSyncTranslation") &&
