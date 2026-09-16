@@ -1,6 +1,6 @@
 # ![ZoteroSci](addon/chrome/content/icons/favicon.png)ZoteroSci
 
-[![zotero target version](https://img.shields.io/badge/Zotero-7/8-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
+[![zotero target version](https://img.shields.io/badge/Zotero-9-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
 [![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
 
 _ZoteroSci_ is a [Zotero](https://www.zotero.org/) plugin based on the PDF Translate project.  
@@ -17,16 +17,8 @@ ZoteroSci can query EasyScholar for journal rank and impact factors. Configure t
 ## Install
 
 - Download the plugin (.xpi file) from below.
-  - [Latest Stable](https://github.com/windingwind/zotero-pdf-translate/releases/latest)
-  - [All Releases](https://github.com/windingwind/zotero-pdf-translate/releases)
-
-  _Note_ If you're using Firefox as your browser, right-click the `.xpi` and select "Save As.."
-
-- In Zotero click `Tools` in the top menu bar and then click `Plugins`
-- Go to the Extensions page and then click the gear icon in the top right.
-- Select `Install Plugin from file`.
-- Browse to where you downloaded the `.xpi` file and select it.
-- Finish!
+  - [Latest Stable](https://github.com/g-steven037/ZoteroSci/releases/latest)
+  - [All Releases](https://github.com/g-steven037/ZoteroSci/releases)
 
 ## Usage
 
@@ -40,6 +32,8 @@ Open any PDF/EPub/webpage in the Zotero reader.
   ![](docs/res/addtonote.jpg)
 
 - Translate item titles with right-click menu or shortcut `Ctrl+T`(v0.6.0).
+- Automatically translate new item titles into Chinese and save them as `中文标题`.
+- Query EasyScholar journal rank, SCI/CAS quartiles, IF and five-year IF for new or selected items.
 - Translate item abstract with right-click menu(v0.8.0). Thanks @iShareStuff
 - Standalone translation window available(v0.7.0). View & compare translations from multiply services in one window!
   ![](docs/res/standalone.jpg)
@@ -64,7 +58,7 @@ Press shortcut `Ctrl+T` after you selected some text. If you are in the collecti
 **A** The default target language is the same as your Zotero language. Go to `Edit->Settings->Translate->Service` and change the language settings.
 
 **Q** Translation not correct or report an error.  
-**A** See _Language Settings_ above and FAQ([#6](https://github.com/windingwind/zotero-pdf-translate/issues/6)). Make sure you use the right secret.
+**A** See _Language Settings_ above and [the ZoteroSci issue tracker](https://github.com/g-steven037/ZoteroSci/issues). Make sure you use the right secret.
 
 **Q** I want to change the font size.  
 **A** Go to `Edit->Settings->Translate->User Interface` and set the font size.
@@ -79,6 +73,7 @@ Press shortcut `Ctrl+T` after you selected some text. If you are in the collecti
 <!-- - Enable Translation, default `true` -->
 
 - Automatically Translate Selection, default `true`
+- Automatically Query EasyScholar Journal Rank for New Items, default `true`
 - Automatically Translate Annotation: Save annotation's translation to annotation comment or annotation body, default `false`
   - Automatically Translate Annotation from Sync: Automatically translate annotations synced from other devices if `true`, default `false`
 - Enable Reader Selection Pop-up: Show results in the pop-up panel or only in the item pane, default `true`
@@ -88,6 +83,22 @@ Press shortcut `Ctrl+T` after you selected some text. If you are in the collecti
 - Enable Dictionary: Single word will be translated using dictionary service instead of translate service, default `true`
   - Show Play Buttons: Show the word pronunciation play buttons if available, default `true`
   - Auto-play Pronunciation, default `false`
+
+### EasyScholar Journal Rank
+
+Open `Edit -> Settings -> ZoteroSci` and configure the EasyScholar `SecretKey`. Use **Test Connection** to verify the key. ZoteroSci queries EasyScholar when a new regular bibliographic item has a `publicationTitle` or `journalAbbreviation`.
+
+The item list includes a `Journal Rank` column with compact colored labels such as `中科院2区`, `SCI Q2`, and `IF 5.8`. The item pane also shows the five-year impact factor and update time. Results are stored in the item Extra fields:
+
+| Extra field | Meaning |
+| --- | --- |
+| `easyScholarRank` | Full official and custom journal rank data |
+| `easyScholarIF` | Impact factor |
+| `easyScholarIF5` | Five-year impact factor |
+| `easyScholarPublication` | Publication name used for lookup |
+| `easyScholarUpdatedAt` | Last successful query time |
+
+Queries are cached for seven days, concurrent lookups for the same journal are merged, and requests are limited to two per second. Selected items can be queried from the context menu with `Query Journal Rank` or `Refresh Journal Rank`.
 
 ### Service
 
@@ -167,7 +178,7 @@ The secret format is `MY_APIKEY#dictNo(optional)#memoryNo(optional)`.
 Apply [here](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/quickstart-translator?tabs=csharp). Copy your secret and paste it into the settings.  
 The secret format is `serviceKEY#region(required if the region is not global)`.
 
-> See [this issue](https://github.com/windingwind/zotero-pdf-translate/issues/3#issuecomment-1064688597) for detailed steps to set up the Microsoft Translate.
+> See [this issue](https://github.com/g-steven037/ZoteroSci/issues/3#issuecomment-1064688597) for detailed steps to set up the Microsoft Translate.
 
 **LingoCloud(Caiyun) Translate**  
 Apply [here](https://docs.caiyunapp.com/lingocloud-api/index.html#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C).
@@ -286,8 +297,8 @@ This plugin is built based on the [Zotero Plugin Template](https://github.com/wi
 To startup, run
 
 ```bash
-git clone https://github.com/windingwind/zotero-pdf-translate.git
-cd zotero-pdf-translate
+git clone https://github.com/g-steven037/ZoteroSci.git
+cd ZoteroSci
 npm install
 npm run build
 ```
@@ -325,6 +336,6 @@ If you want to leave your name here, please email me or leave a message with the
 
 ## Contributors
 
-<a href="https://github.com/windingwind/zotero-pdf-translate/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=windingwind/zotero-pdf-translate" />
+<a href="https://github.com/g-steven037/ZoteroSci/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=g-steven037/ZoteroSci" />
 </a>
