@@ -160,7 +160,7 @@ service-youdaozhiyunllm-dialog-stream=Stream
 readerpopup-translate-label=Translate
 readerpopup-addToNote-label=Add Translation to Note
 
-pref-title=Translate
+pref-title=ZoteroSci
 
 field-titleTranslation=Chinese Title
 field-abstractTranslation=Abstract Translation
