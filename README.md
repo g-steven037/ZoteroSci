@@ -1,300 +1,57 @@
-# ![ZoteroSci](addon/chrome/content/icons/favicon.png)ZoteroSci
+# ![ZoteroSci](addon/chrome/content/icons/favicon.png) ZoteroSci
 
-[![zotero target version](https://img.shields.io/badge/Zotero-9-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
-[![Using Zotero Plugin Template](https://img.shields.io/badge/Using-Zotero%20Plugin%20Template-blue?style=flat-square&logo=github)](https://github.com/windingwind/zotero-plugin-template)
+[![Zotero 9](https://img.shields.io/badge/Zotero-9-green?style=flat-square&logo=zotero&logoColor=CC2936)](https://www.zotero.org)
 
-_ZoteroSci_ is a [Zotero](https://www.zotero.org/) plugin based on the PDF Translate project.  
-Translate PDF, EPub, webpage, metadata, annotations, notes to the target language. Support 20+ translate services.
+ZoteroSci 是一个面向科研文献管理的 Zotero 插件，基于开源项目 **Zotero PDF Translate** 开发。
 
-ZoteroSci can query EasyScholar for journal rank and impact factors. Configure the EasyScholar `SecretKey` in the plugin Preferences. New regular items can be queried automatically, or selected items can be queried from the context menu. Results are stored in Extra fields and shown in the `Journal Rank` list column and item pane. Requests are cached for seven days and limited to two per second.
+## 原始项目
 
-[中文文档](https://zotero.yuque.com/books/share/4443494c-c698-4e08-9d1e-ed253390346d)
+原插件已经提供 PDF、EPUB、网页、元数据、批注和笔记翻译，以及多种翻译服务支持。原插件的完整功能说明、使用文档和基础实现请访问：
 
-![](docs/res/translate.gif)
+- [Zotero PDF Translate 原仓库](https://github.com/windingwind/zotero-pdf-translate)
 
-# Quick Start Guide
 
-## Install
+## ZoteroSci 新增功能
 
-- Download the plugin (.xpi file) from below.
-  - [Latest Stable](https://github.com/g-steven037/ZoteroSci/releases/latest)
-  - [All Releases](https://github.com/g-steven037/ZoteroSci/releases)
+### 中文标题翻译
 
-## Usage
+- 对普通文献条目的 `标题` 字段进行中文翻译，并保存到独立的 `中文标题` 字段。
+- 支持手动翻译和自动翻译。
+- 自动翻译仅在新条目加入 Zotero 时触发，不会默认扫描并翻译已有全部条目。
+- 可从条目右键菜单执行翻译，也支持批量处理和进度反馈。
+- 条目语言为 `zh` 或其他中文标识时，可按设置选择跳过或继续翻译。
+- 翻译服务可在设置界面选择和配置，优先支持 Google 翻译、必应翻译等服务。
 
-Open any PDF/EPub/webpage in the Zotero reader.
+### EasyScholar 期刊分析
 
-- Select text, the translations are shown on the pop-up and the item pane(v0.2.0).
-  ![](docs/res/en2zh.jpg)
+- 通过 EasyScholar 开放接口查询期刊等级、SCI 分区、中科院分区、影响因子和五年影响因子。
+- 仅处理普通文献条目，并根据 `出版物` 或 `期刊缩写` 查询期刊。
+- 支持新条目自动查询，以及从条目右键菜单手动查询或强制刷新。
+- 查询结果显示在 `期刊分区` 列表列和条目信息面板中，以紧凑的彩色标签展示，例如：`中科院2区`、`SCI Q2`、`IF 5.8`。
+- 原始数据同时保存到条目的 Extra 字段，便于检索和后续扩展。
+- 请求结果缓存七天，并限制请求速率；相同期刊的并发查询会合并。
 
-- Highlight/Underline some text, the translations are added to the annotation comment(v0.3.0); Modify & retranslate the annotation text in the item pane and click the `Update Annotation` to modify the annotation text and translation(v0.6.6);
-- Add selected text along with translation to note(v0.4.0); _Only works when a note editor is active._
-  ![](docs/res/addtonote.jpg)
+### EasyScholar 配置
 
-- Translate item titles with right-click menu or shortcut `Ctrl+T`(v0.6.0).
-- Automatically translate new item titles into Chinese and save them as `中文标题`.
-- Query EasyScholar journal rank, SCI/CAS quartiles, IF and five-year IF for new or selected items.
-- Translate item abstract with right-click menu(v0.8.0). Thanks @iShareStuff
-- Standalone translation window available(v0.7.0). View & compare translations from multiply services in one window!
-  ![](docs/res/standalone.jpg)
+在 Zotero 中打开 `编辑 → 设置 → ZoteroSci`，填写 EasyScholar `SecretKey`，使用“测试连接”确认配置。
 
-- Dictionary for single word translation(v0.7.1).
-- SentenceBySentence Translation(v1.1.0). After a translation, press `shift`+`P` and select `Translate Sentences`. _Only for en2zh and en2en now_. Thanks @MuiseDestiny
-- Since v2.2.0, the concat mode shortcut is ctrl (on Windows/Linux) or ⌘ (on macOS).
+结果字段如下：
 
-### Q&A
-
-**Q** I want to translate manually.  
-**A** Go to `Edit->Settings->Translate->General`, uncheck the `Automatically Translate Selection`. Click the `Translate` button on the pop-up or item pane to translate.
-
-**Q** I want a translate shortcut.  
-**A**
-Press shortcut `Ctrl+T` after you selected some text. If you are in the collection view, the titles' translation will show/hide.
-
-**Q** I want to concat different selections and translate them together.  
-**A** Press `Ctrl/⌘` or select the `Concat Mode` check box on item pane when selecting text in PDF/EPub/webpage.
-
-**Q** Not the language I want.  
-**A** The default target language is the same as your Zotero language. Go to `Edit->Settings->Translate->Service` and change the language settings.
-
-**Q** Translation not correct or report an error.  
-**A** See _Language Settings_ above and [the ZoteroSci issue tracker](https://github.com/g-steven037/ZoteroSci/issues). Make sure you use the right secret.
-
-**Q** I want to change the font size.  
-**A** Go to `Edit->Settings->Translate->User Interface` and set the font size.
-
-**Q** I want to resize the raw and result text area in the translate panel.  
-**A** Drag the separator up and down to adjust the size. Double-click the separator to reset the size.
-
-## Settings
-
-### General
-
-<!-- - Enable Translation, default `true` -->
-
-- Automatically Translate Selection, default `true`
-- Automatically Query EasyScholar Journal Rank for New Items, default `true`
-- Automatically Translate Annotation: Save annotation's translation to annotation comment or annotation body, default `false`
-  - Automatically Translate Annotation from Sync: Automatically translate annotations synced from other devices if `true`, default `false`
-- Enable Reader Selection Pop-up: Show results in the pop-up panel or only in the item pane, default `true`
-- Show "Add Translation to Note" in Pop-up: default `true`
-  > Invisible if no active note editor opened.
-  - Replace Raw: Use translation to replace the raw text when adding to note, default `false`
-- Enable Dictionary: Single word will be translated using dictionary service instead of translate service, default `true`
-  - Show Play Buttons: Show the word pronunciation play buttons if available, default `true`
-  - Auto-play Pronunciation, default `false`
-
-### EasyScholar Journal Rank
-
-Open `Edit -> Settings -> ZoteroSci` and configure the EasyScholar `SecretKey`. Use **Test Connection** to verify the key. ZoteroSci queries EasyScholar when a new regular bibliographic item has a `publicationTitle` or `journalAbbreviation`.
-
-The item list includes a `Journal Rank` column with compact colored labels such as `中科院2区`, `SCI Q2`, and `IF 5.8`. The item pane also shows the five-year impact factor and update time. Results are stored in the item Extra fields:
-
-| Extra field | Meaning |
+| Extra 字段 | 说明 |
 | --- | --- |
-| `easyScholarRank` | Full official and custom journal rank data |
-| `easyScholarIF` | Impact factor |
-| `easyScholarIF5` | Five-year impact factor |
-| `easyScholarPublication` | Publication name used for lookup |
-| `easyScholarUpdatedAt` | Last successful query time |
+| `easyScholarRank` | 期刊等级及分区原始数据 |
+| `easyScholarIF` | 影响因子 |
+| `easyScholarIF5` | 五年影响因子 |
+| `easyScholarPublication` | 实际查询使用的期刊名称 |
+| `easyScholarUpdatedAt` | 最近一次成功查询时间 |
 
-Queries are cached for seven days, concurrent lookups for the same journal are merged, and requests are limited to two per second. Selected items can be queried from the context menu with `Query Journal Rank` or `Refresh Journal Rank`.
+接口详情请参阅 [EasyScholar 期刊等级查询接口](https://www.easyscholar.cc/)。
 
-### Service
+## 安装
 
-The default service is Google Translate. Currently, we support:
+从 [最新稳定版](https://github.com/g-steven037/ZoteroSci/releases/latest) 下载 `.xpi` 文件，然后在 Zotero 的插件管理器中选择“从文件安装插件”。
 
-| Translate Service            | Require Secret                | Supported Languages                                                                                                                                                                        |
-| ---------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Google Translate             | No **[Free]**                 | [100+](https://translate.google.com/about/languages/)                                                                                                                                      |
-| Google Translate(API)        | No **[Free]**                 | Use `translate.googleapis.com`                                                                                                                                                             |
-| CNKI                         | No **[Free]**                 | <https://dict.cnki.net>                                                                                                                                                                    |
-| Haici Translate              | No **[Free]**                 | <https://fanyi.dict.cn>                                                                                                                                                                    |
-| Youdao Translate             | No **[Free]**                 | [100+?](https://ai.youdao.com/DOCSIRMA/html/trans/api/wbfy/index.html)                                                                                                                     |
-| iCIBA Translate              | No **[Free]**                 | <https://www.iciba.com/translate>                                                                                                                                                          |
-| MyMemory                     | No **[Free 5k/day per IP]**   | <https://mymemory.translated.net/><br>(Free upgrade: enter your email in Settings to get 50k/day per IP quota)                                                                             |
-| Bing                         | No **[Free]**                 | [en-zh](https://learn.microsoft.com/en-us/azure/ai-services/translator/text-translation/reference/v3/reference)                                                                            |
-| DeepLX                       | No **[Free]**                 | Based on [DeepLX](https://github.com/OwO-Network/DeepLX?tab=readme-ov-file)                                                                                                                |
-| DeepLX(API)                  | No **[Require config]**       | [DeepLX](https://github.com/OwO-Network/DeepLX?tab=readme-ov-file) related projects                                                                                                        |
-| LibreTranslate               | Optional **[Require config]** | [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate)                                                                                                                         |
-| MTranServer                  | Optional **[Require config]** | [MTranServer](https://github.com/xxnuo/MTranServer)                                                                                                                                        |
-| NLLB                         | No **[Require config]**       | [nllb-api](https://github.com/winstxnhdw/nllb-api?tab=readme-ov-file#self-hosting) or [NLLB Serve](https://github.com/thammegowda/nllb-serve?tab=readme-ov-file#setup)                     |
-| Pot                          | No **[Require config]**       | [Pot](https://github.com/pot-app/pot-desktop) _Translate results show in Pot_                                                                                                              |
-| Huoshan                      | Yes                           | [50+](https://www.volcengine.com/docs/4640/127681)                                                                                                                                         |
-| Volcengine Web               | No **[Free]**                 | [en, zh, and more (auto-detect, web version)](https://translate.volcengine.com/)                                                                                                           |
-| Youdao Zhiyun                | Yes                           | [100+](https://ai.youdao.com/DOCSIRMA/html/trans/api/wbfy/index.html)                                                                                                                      |
-| Youdao LLM                   | Yes                           | [LLM-based](https://ai.youdao.com/DOCSIRMA/html/trans/api/dmxfy/index.html)(en-zh)                                                                                                         |
-| Niu Trans                    | Yes                           | [400+](https://niutrans.com/documents/contents/trans_text#accessMode)                                                                                                                      |
-| Microsoft Translate          | Yes(free 2M)                  | [200+](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/language-support)                                                                                              |
-| LingoCloud(Caiyun) Translate | Yes                           | [10+](https://docs.caiyunapp.com/lingocloud-api/index.html)                                                                                                                                |
-| DeepL Translate              | Yes(free 500k)                | [100+](https://www.deepl.com/pro?cta=header-prices/#developer)                                                                                                                             |
-| Aliyun Translate             | Yes(free-1M)                  | [200+](https://help.aliyun.com/document_detail/158269.html)                                                                                                                                |
-| Baidu Translate              | Yes(free-QPS1/free-2M)        | [200+](https://fanyi-api.baidu.com/product/11)                                                                                                                                             |
-| Baidu Field                  | Yes(free-QPS1/free-2M)        | [en-zh](https://fanyi-api.baidu.com/product/12)                                                                                                                                            |
-| OpenL                        | Yes                           | [11](https://docs.openl.club/#/API/format)                                                                                                                                                 |
-| Tencent Translate            | Yes(QPS5, free-5M)            | [15](https://cloud.tencent.com/document/product/551/7372)                                                                                                                                  |
-| Tencent Transmart            | No **[Free]**                 | [en, zh, and more (auto-detect, web version)](https://transmart.qq.com/)                                                                                                                   |
-| Xftrans                      | Yes(free 2M)                  | [Xftrans API](https://www.xfyun.cn/doc/nlp/xftrans/API.html)(70+), [NiuTrans API](https://www.xfyun.cn/doc/nlp/niutrans/API.html)(100+)                                                    |
-| GPT                          | Yes(free-$18)                 | [OpenAI](https://openai.com/pricing#chat)(ChatGPT), [AzureGPT](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/reference#chat-completions), compatible GPT-like LLM (Custom GPT) |
-| Gemini                       | Yes(free-)                    | [LLM-based](https://ai.google.dev/available_regions#available_languages)                                                                                                                   |
-| Qwen-MT                      | Yes(free-)                    | [LLM-based](https://help.aliyun.com/zh/model-studio/user-guide/machine-translation)                                                                                                        |
-| Claude                       | Yes                           | [LLM-based](https://docs.anthropic.com/claude/docs/getting-started-with-the-claude-api)                                                                                                    |
-
-> If the service you want is not yet supported, please post an issue.
-
-**Google**  
-Google does not require a secret, but you can put your own API URL in the secret to replace the default URL (translate.google.com/translate.googleapi.com).
-
-**Huoshan**  
-Apply [here](https://www.volcengine.com/docs/4640/65067).  
-The secret format is `accessKeyId#accessKeySecret`
-
-**Youdao Zhiyun Translate 有道智云**  
-Apply [here](https://ai.youdao.com/login.s).  
-The secret format is `MY_APPID#MY_SECRET#MY_VOCABID(optional)`.
-
-> About `VOCABID`  
-> 登录控制台，选择文本翻译服务，点击右侧的术语表，选择新建，填写表名称和语言方向，添加需要的术语表，然后获取对应词表 id 即可。  
-> About `Config -> Domain`  
-> 登录控制台，点击创建应用，输入应用名称，在*选择服务*一栏勾选**文本翻译**，然后勾选**领域化翻译**即可开通领域化翻译。领域化翻译仅支持中英互译。
->
-> [Official Document](https://ai.youdao.com/DOCSIRMA/html/trans/api/wbfy/index.html)
-
-**Youdao LLM Translate 有道智云子曰大模型**  
-Apply [here](https://ai.youdao.com/login.s).  
-The secret format is `MY_APPID#MY_SECRET`.
-
-> 登录控制台，点击创建应用，输入应用名称，在*选择服务*一栏勾选**大模型翻译**，大模型翻译仅支持中英互译。
->
-> [Official Document](https://ai.youdao.com/DOCSIRMA/html/trans/api/dmxfy/index.html)
-
-**NiuTrans**  
-Apply [here](https://niutrans.com/NiuTransAuthCenter/login).  
-The secret format is `MY_APIKEY#dictNo(optional)#memoryNo(optional)`.
-
-> [Chinese Document](https://doc.tern.1c7.me/zh/folder/setting/#%E5%B0%8F%E7%89%9B)
-
-**Microsoft Translate**  
-Apply [here](https://docs.microsoft.com/en-us/azure/cognitive-services/translator/quickstart-translator?tabs=csharp). Copy your secret and paste it into the settings.  
-The secret format is `serviceKEY#region(required if the region is not global)`.
-
-> See [this issue](https://github.com/g-steven037/ZoteroSci/issues/3#issuecomment-1064688597) for detailed steps to set up the Microsoft Translate.
-
-**LingoCloud(Caiyun) Translate**  
-Apply [here](https://docs.caiyunapp.com/lingocloud-api/index.html#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C).
-
-**DeepL Translate**  
-Apply [official API](https://www.deepl.com/pro?cta=header-prices/#developer) or [third-party API](https://deepl-pro.com/#/translate).  
-The secret format is `secretToken` or `secretToken#glossaryId` (if you want to specify some translate glossary).
-
-**Aliyun Translate**  
-Apply [here](https://www.aliyun.com/product/ai/base_alimt).  
-The secret format is `accessKeyId#accessKeySecret#endpoint(optional)`.
-
-> The endpoint is the region of the service, default `https://mt.aliyuncs.com`. For `cn-hangzhou`, the endpoint is `mt.cn-hangzhou.aliyuncs.com`. See also [here](https://help.aliyun.com/zh/machine-translation/developer-reference/api-alimt-2018-10-12-endpoint?spm=a2c4g.11186623.help-menu-30396.d_4_1_0.6c702fa7WlNkX1).
-
-> [Chinese Document](https://help.aliyun.com/document_detail/158269.html)
-
-**Baidu Translate**  
-Apply [here](https://fanyi-api.baidu.com/product/11).  
-The secret format is `MY_APPID#MY_KEY#ACTION(optional, see https://api.fanyi.baidu.com/doc/21, default 0)`(split with '#').
-
-**Baidu Field Translate 百度垂直领域翻译**  
-Apply [here](https://fanyi-api.baidu.com/product/12).  
-The secret format is `MY_APPID#MY_KEY#DOMAIN_CODE`(split with '#').
-
-| Domain Code | 领域         | 支持语言方向                          |
-| ----------- | ------------ | ------------------------------------- |
-| it          | 信息技术领域 | 中文（简）-> 英语、英语 -> 中文（简） |
-| finance     | 金融财经领域 | 中文（简）-> 英语、英语 -> 中文（简） |
-| machinery   | 机械制造领域 | 中文（简）-> 英语、英语 -> 中文（简） |
-| senimed     | 生物医药领域 | 中文（简）-> 英语、英语 -> 中文（简） |
-| novel       | 网络文学领域 | 中文（简）-> 英语                     |
-| academic    | 学术论文领域 | 中文（简）-> 英语、英语 -> 中文（简） |
-| aerospace   | 航空航天领域 | 中文（简）-> 英语、英语 -> 中文（简） |
-| wiki        | 人文社科领域 | 中文（简）-> 英语                     |
-| news        | 新闻资讯领域 | 中文（简）-> 英语、英语 -> 中文（简） |
-| law         | 法律法规领域 | 中文（简）-> 英语、英语 -> 中文（简） |
-| contract    | 合同领域     | 中文（简）-> 英语、英语 -> 中文（简） |
-
-> [Chinese Document](https://doc.tern.1c7.me/zh/folder/setting/#%E8%85%BE%E8%AE%AF%E4%BA%91)
-
-**OpenL Translate**  
-Apply [here](https://my.openl.club/).  
-The secret format is `service1,service2,...#apikey`(split with '#'; split service codes with ',').
-
-Supported service codes are: `deepl,youdao,tencent,aliyun,baidu,caiyun,wechat,sogou,azure,ibm,aws,google`, See [Service Code](https://docs.openl.club/#/API/format?id=%e7%bf%bb%e8%af%91%e6%9c%8d%e5%8a%a1%e4%bb%a3%e7%a0%81%e5%90%8d)
-
-> [Chinese Document](https://docs.openl.club/#/)
-
-**Tencent Translate**  
-Apply [here](https://cloud.tencent.com/product/tmt).  
-The secret format is `secretId#SecretKey#Region(optional, default ap-shanghai)#ProjectId(optional, default 0)`(split with '#').
-
-> [Chinese Document](https://doc.tern.1c7.me/zh/folder/setting/#%E8%85%BE%E8%AE%AF%E4%BA%91)
-
-**Xftrans 讯飞翻译**  
-Apply [here](https://www.xfyun.cn/doc/authentication/personal.html#%E6%93%8D%E4%BD%9C%E6%AD%A5%E9%AA%A4).
-
-**GPT**  
-Apply [OpenAI ChatGPT API](https://auth.openai.com/create-account) or [Azure OpenAI REST API](https://azure.microsoft.com/free/cognitive-services).  
-The secret format is `sk-*` for ChatGPT, and `MY_APIKEY` for AzureGPT and Custom GPT.
-
-Support third-party or self-deployed compatible APIs.
-
-> [Chinese Document](https://gist.github.com/GrayXu/f1b72353b4b0493d51d47f0f7498b67b)
-
-**Gemini**  
-Apply [here](https://ai.google.dev/gemini-api/docs).  
-The secret format is `MY_APIKEY`.
-
-**Qwen-MT**  
-Apply [here](https://help.aliyun.com/zh/model-studio/user-guide/machine-translation).  
-The secret format is `MY_APIKEY`.
-
-**Claude**  
-Apply [here](https://docs.anthropic.com/claude/docs/getting-started-with-the-claude-api).
-
-**LibreTranslate**  
-See [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate). API Key is optional.
-
-**MTranServer**  
-See [MTranServer](https://github.com/xxnuo/MTranServer). Token is optional.
-
-> MTranServer only supports `zh`-`en` language pairs for v2.1.1 and previous versions. For MTranServer v3.0.0+, please check the checkbox in the Config panel to use `zh-Hans` or `zh-Hant` language. See [explanation of the supported languages](https://github.com/xxnuo/MTranServer/issues/59#issuecomment-3131551779).
-
-**NLLB**  
-See [nllb-api](https://github.com/winstxnhdw/nllb-api?tab=readme-ov-file#self-hosting) or [NLLB Serve](https://github.com/thammegowda/nllb-serve?tab=readme-ov-file#setup).
-
-**Pot**  
-See [Pot](https://github.com/pot-app/pot-desktop?tab=readme-ov-file#%E5%A4%96%E9%83%A8%E8%B0%83%E7%94%A8). _Translate results show in Pot._
-
-### User Interface
-
-- `Font Size`: The font size of result text, default `12`
-- `Line Height`: The line height of result text, default `1.5`
-- `Item Context Menu: Show xxx`: Show or hide Title/Abstract tanslation, default `true`
-- `Item Pane Section: Show xxx`: Show or hide elements in the item pane, default `true`
-- `Item Pane Section: Hold down Ctrl/⌘`: Press key to enable concat mode when selecting text in PDF/EPub/webpage if `true`, default `true`
-- `Item Pane Section: Reverse Raw/Result`: Reverse the order of Raw/Result in the item pane if `true`, default `false`
-- `Item Pane Info: Show xxx`: Show or hide Title/Abstract tanslation in the item info rows
-- `Standalone: Keep Windows on Top`: Top the standalone translate panel if `true`, default `false`
-- `Pop-up: Remember Size`: Remember size of pop-up if `true`, else automatically adjust the size, default `false`
-
-### Advanced
-
-- Strip empty lines and thinking from translation results: Automatically remove empty lines or thinking labels from translation results, especially for some LLM translation services.
-- Automatically Detect Item Language
-  - Disable Automatic Translation when File Language is(comma-separated): If you want to disable automatic translation in `zh` and `ja` files, set `zh,ja`. Default `zh,zh-CN,中文`.
-- Delimiter (between text and translation): When translating annotations, the result will be wrapped inside this character to allow safe re-translate. If set to empty, re-translating annotations will replace the annotation comment/body with the new translate result.
-- Regex for removing extra text from translation results (leave empty to disable): Automatically remove text from translation results using regex. You need to understand how to use regex in advance.
-- Reset field of selected items in library: Batch reset the _Title Translation_ or _Abstract Translation_ of selected items. Please select the items in Library or Collection panel and then click the button.
-
-## Development & Contributing
-
-This plugin is built based on the [Zotero Plugin Template](https://github.com/windingwind/zotero-plugin-template). See the setup and debug details there.
-
-To startup, run
+## 开发
 
 ```bash
 git clone https://github.com/g-steven037/ZoteroSci.git
@@ -303,39 +60,14 @@ npm install
 npm run build
 ```
 
-The plugin is built to `./build/*.xpi`.
+构建结果位于 `build/*.xpi`。
 
-### Contributing
+## 贡献
 
-**Add new translate service**
+ZoteroSci 深度使用并继承了 Zotero PDF Translate 的翻译架构、服务集成和阅读器功能。感谢原作者及原仓库贡献者的长期维护，ZoteroSci 的相关工作建立在这些贡献之上。
 
-1. Copy `src/modules/services/_template.ts` > `src/services/<your-service-id>.ts`;
-2. Fill in the required fields (id, type, and translate) and optional fields (name, helpUrl, defaultSecret, secretValidator(secret), and config(settings)) following the introduction. The translation function sets the translation result to `data.result` if runs successfully and throws an error if fails;
-3. Import the new service object in `src/modules/services/index.ts`.
-4. Add locale string `service.${serviceId}` and `service-<your-service-id>-dialog-xxx`(if necessary) in `addon/locale/${lang}/addon.ftl`.
-5. Build and test.
+- 改进原有 PDF、EPUB、网页、批注、笔记或通用翻译功能：请优先向 [Zotero PDF Translate 原仓库](https://github.com/windingwind/zotero-pdf-translate) 提交 Issue 或 Pull Request。
+- 改进中文标题翻译、EasyScholar 期刊分析、期刊分区显示等 ZoteroSci 专属功能：请在 [ZoteroSci 仓库](https://github.com/g-steven037/ZoteroSci) 提交 Issue 或 Pull Request。
+- 复用或修改原插件代码时，请保留原项目的许可证和贡献归属信息。
 
-## Disclaimer
-
-Use this code under AGPL. No warranties are provided. Keep the laws of your locality in mind!
-
-## My Zotero Plugins
-
-- [Better Notes for Zotero](https://github.com/windingwind/zotero-better-notes): Everything about note management. All in Zotero.
-- [Actions & Tags for Zotero](https://github.com/windingwind/zotero-tag): Customize your Zotero workflow.
-- [Bionic for Zotero](https://github.com/windingwind/bionic-for-zotero): Bionic reading experience with Zotero.
-
-## Sponsors
-
-Thanks
-[peachgirl100](https://github.com/peachgirl100),
-[youngfish42](https://github.com/youngfish42),
-and other anonymous sponsors!
-
-If you want to leave your name here, please email me or leave a message with the donation.
-
-## Contributors
-
-<a href="https://github.com/g-steven037/ZoteroSci/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=g-steven037/ZoteroSci" />
-</a>
+本项目遵循 AGPL-3.0-or-later 许可证。
