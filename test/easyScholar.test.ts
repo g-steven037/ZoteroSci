@@ -6,6 +6,11 @@ import {
   setEasyScholarHttpRequestForTest,
   setEasyScholarSecret,
 } from "../src/modules/easyScholar";
+import {
+  getPublicationName,
+  isEligiblePublicationItem,
+  queryItemPublicationRank,
+} from "../src/modules/easyScholarFields";
 
 describe("EasyScholar publication rank parser", function () {
   it("prefers selected official ranks and parses custom ranks", function () {
@@ -85,5 +90,31 @@ describe("EasyScholar publication rank parser", function () {
     assert.equal(calls, 1);
     assert.equal((await queryPublicationRank("Journal & Reports"))?.impactFactor, "8.2");
     assert.equal(calls, 1);
+  });
+
+  it("extracts publication names and persists a successful item result", async function () {
+    const extras = new Map<string, string>();
+    const item = {
+      id: 9,
+      parentID: false,
+      isRegularItem: () => true,
+      getField: (field: string) =>
+        field === "publicationTitle" ? "Nature" : "",
+      saveTx: () => undefined,
+    };
+    assert.isTrue(isEligiblePublicationItem(item));
+    assert.equal(getPublicationName(item), "Nature");
+    await queryItemPublicationRank(item, {
+      query: async () => ({
+        publication: "Nature",
+        rank: "SCI Q1",
+        impactFactor: "42.0",
+        impactFactor5: "45.0",
+        updatedAt: "2026-09-16T00:00:00.000Z",
+      }),
+      setExtra: (key: string, value: string) => extras.set(key, value),
+    });
+    assert.equal(extras.get("easyScholarRank"), "SCI Q1");
+    assert.equal(extras.get("easyScholarIF"), "42.0");
   });
 });
