@@ -121,7 +121,7 @@ vitest.config.ts                  # 纯模块测试配置
 
 - [ ] **Step 3: 创建最小工程和 manifest**
 
-  `package.json` 固定脚本和依赖：`esbuild` 用于生产构建，`typescript` 用于类型检查，`vitest` 用于单元测试。`addon/manifest.json` 使用稳定 ID、版本号 `0.1.0`、`strict_min_version: "9.0"`、`strict_max_version: "9.0.*"`，并声明 `bootstrap.js` 与 `prefs.js`。
+  `package.json` 固定脚本和依赖：`esbuild` 用于生产构建，`typescript` 用于类型检查，`vitest` 用于单元测试，`fflate` 用于生成 XPI ZIP。`addon/manifest.json` 使用稳定 ID、版本号 `0.1.0`、`strict_min_version: "9.0"`、`strict_max_version: "9.0.*"`，并声明 `bootstrap.js` 与 `prefs.js`。
 
   `src/config.ts` 定义：
 
