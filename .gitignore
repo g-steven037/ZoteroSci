@@ -1,0 +1,7 @@
+node_modules/
+dist/
+build/
+.superpowers/sdd/
+.worktrees/
+*.xpi
+*.map
