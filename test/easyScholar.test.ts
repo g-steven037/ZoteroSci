@@ -1,6 +1,10 @@
 import {
+  clearEasyScholarCache,
   normalizePublicationName,
   parsePublicationRankResponse,
+  queryPublicationRank,
+  setEasyScholarHttpRequestForTest,
+  setEasyScholarSecret,
 } from "../src/modules/easyScholar";
 
 describe("EasyScholar publication rank parser", function () {
@@ -59,5 +63,27 @@ describe("EasyScholar publication rank parser", function () {
       normalizePublicationName("  Journal   of   Reports "),
       "journal of reports",
     );
+  });
+
+  it("coalesces concurrent queries and reuses a fresh cache", async function () {
+    clearEasyScholarCache();
+    setEasyScholarSecret("test-key");
+    let calls = 0;
+    setEasyScholarHttpRequestForTest(async () => {
+      calls += 1;
+      return {
+        code: 200,
+        data: { officialRank: { select: { sciif: "8.2" } } },
+      };
+    });
+
+    const first = queryPublicationRank("Journal & Reports");
+    const second = queryPublicationRank(" journal   & reports ");
+    const [firstResult, secondResult] = await Promise.all([first, second]);
+
+    assert.deepEqual(firstResult, secondResult);
+    assert.equal(calls, 1);
+    assert.equal((await queryPublicationRank("Journal & Reports"))?.impactFactor, "8.2");
+    assert.equal(calls, 1);
   });
 });

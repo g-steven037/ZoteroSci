@@ -1,4 +1,4 @@
-import { getPref } from "../utils/prefs";
+import { clearPref, getPref, setPref } from "../utils/prefs";
 import { getServiceSecret, setServiceSecret } from "../utils/secret";
 
 export const EASY_SCHOLAR_ENDPOINT =
@@ -29,6 +29,24 @@ interface EasyScholarResponse {
     };
   } | null;
 }
+
+interface CacheEntry {
+  result: PublicationRankResult;
+  cachedAt: number;
+}
+
+type EasyScholarHttpRequest = (url: string) => Promise<unknown>;
+
+let httpRequest: EasyScholarHttpRequest = async (url) => {
+  const response = await Zotero.HTTP.request("GET", url, {
+    responseType: "json",
+    timeout: 10000,
+  });
+  return response.response;
+};
+let requestChain = Promise.resolve();
+let lastRequestAt = 0;
+const inFlight = new Map<string, Promise<PublicationRankResult | undefined>>();
 
 const OFFICIAL_LABELS: Record<string, string> = {
   sci: "SCI",
@@ -149,4 +167,128 @@ export function getEasyScholarCacheTTL(): number {
   return Number.isFinite(configured) && configured > 0
     ? configured
     : EASY_SCHOLAR_DEFAULT_TTL;
+}
+
+function readCache(): Record<string, CacheEntry> {
+  try {
+    const value = JSON.parse(String(getPref(EASY_SCHOLAR_CACHE_PREF) || "{}"));
+    return value && typeof value === "object" ? value : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeCache(cache: Record<string, CacheEntry>): void {
+  setPref(EASY_SCHOLAR_CACHE_PREF, JSON.stringify(cache));
+}
+
+function enqueue<T>(task: () => Promise<T>): Promise<T> {
+  const run = requestChain.then(async () => {
+    const wait = Math.max(
+      0,
+      EASY_SCHOLAR_REQUEST_INTERVAL - (Date.now() - lastRequestAt),
+    );
+    if (wait > 0) {
+      await new Promise<void>((resolve) => setTimeout(resolve, wait));
+    }
+    lastRequestAt = Date.now();
+    return task();
+  });
+  requestChain = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
+}
+
+async function requestPublicationRank(
+  publication: string,
+): Promise<PublicationRankResult | undefined> {
+  const secret = getEasyScholarSecret();
+  if (!secret) {
+    ztoolkit.log("EasyScholar query skipped: SecretKey is not configured");
+    return;
+  }
+  const url = `${EASY_SCHOLAR_ENDPOINT}?secretKey=${encodeURIComponent(
+    secret,
+  )}&publicationName=${encodeURIComponent(publication)}`;
+  try {
+    const response = await enqueue(() => httpRequest(url));
+    return parsePublicationRankResponse(response, publication);
+  } catch (error) {
+    ztoolkit.log("EasyScholar query failed", {
+      type: error instanceof Error ? error.name : "unknown",
+    });
+    return;
+  }
+}
+
+export function queryPublicationRank(
+  publication: string,
+  options: { force?: boolean } = {},
+): Promise<PublicationRankResult | undefined> {
+  const normalized = normalizePublicationName(publication);
+  if (!normalized) return Promise.resolve(undefined);
+  const cache = readCache();
+  const cached = cache[normalized];
+  if (
+    !options.force &&
+    cached &&
+    Date.now() - cached.cachedAt < getEasyScholarCacheTTL()
+  ) {
+    return Promise.resolve(cached.result);
+  }
+  if (inFlight.has(normalized)) return inFlight.get(normalized)!;
+
+  const request = requestPublicationRank(publication).then((result) => {
+    if (result) {
+      const updated = readCache();
+      updated[normalized] = { result, cachedAt: Date.now() };
+      writeCache(updated);
+    }
+    return result;
+  });
+  inFlight.set(normalized, request);
+  void request.finally(() => inFlight.delete(normalized));
+  return request;
+}
+
+export async function testEasyScholarSecret(
+  secret: string,
+  publication = "Nature",
+): Promise<boolean> {
+  const trimmed = secret.trim();
+  if (!trimmed) return false;
+  const url = `${EASY_SCHOLAR_ENDPOINT}?secretKey=${encodeURIComponent(
+    trimmed,
+  )}&publicationName=${encodeURIComponent(publication)}`;
+  try {
+    const response = await enqueue(() => httpRequest(url));
+    return !!parsePublicationRankResponse(response, publication);
+  } catch {
+    return false;
+  }
+}
+
+export function clearEasyScholarCache(): void {
+  clearPref(EASY_SCHOLAR_CACHE_PREF);
+}
+
+export function setEasyScholarHttpRequestForTest(
+  request: EasyScholarHttpRequest,
+): void {
+  httpRequest = request;
+}
+
+export function shutdownEasyScholar(): void {
+  inFlight.clear();
+  requestChain = Promise.resolve();
+  lastRequestAt = 0;
+  httpRequest = async (url) => {
+    const response = await Zotero.HTTP.request("GET", url, {
+      responseType: "json",
+      timeout: 10000,
+    });
+    return response.response;
+  };
 }

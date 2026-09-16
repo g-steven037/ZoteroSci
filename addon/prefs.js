@@ -3,6 +3,8 @@ pref("__prefsPrefix__.enableAutoTitleTranslation", false);
 pref("__prefsPrefix__.autoTitleTranslationConfigured", false);
 pref("__prefsPrefix__.skipChineseTitle", true);
 pref("__prefsPrefix__.overwriteTitleTranslation", false);
+pref("__prefsPrefix__.enableAutoPublicationRank", true);
+pref("__prefsPrefix__.easyScholarCacheTTL", 604800000);
 pref("__prefsPrefix__.enableDict", true);
 pref("__prefsPrefix__.attachPaperContext", false);
 pref("__prefsPrefix__.enablePopup", true);

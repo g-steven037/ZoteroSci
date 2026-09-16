@@ -12,6 +12,8 @@ declare namespace _ZoteroTypes {
       "autoTitleTranslationConfigured": boolean;
       "skipChineseTitle": boolean;
       "overwriteTitleTranslation": boolean;
+      "enableAutoPublicationRank": boolean;
+      "easyScholarCacheTTL": number;
       "enableDict": boolean;
       "attachPaperContext": boolean;
       "enablePopup": boolean;
