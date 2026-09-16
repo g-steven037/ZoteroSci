@@ -9,6 +9,12 @@ import {
 } from "../utils/secret";
 import { createServiceSettingsDialog } from "../utils";
 import { services } from "./services";
+import {
+  clearEasyScholarSecret,
+  getEasyScholarSecret,
+  setEasyScholarSecret,
+  testEasyScholarSecret,
+} from "./easyScholar";
 
 export function registerPrefsWindow() {
   Zotero.PreferencePanes.register({
@@ -201,6 +207,18 @@ function buildPrefsPane() {
     ?.addEventListener("command", () => {
       onPrefsEvents("setOverwriteTitleTranslation");
     });
+  doc
+    .querySelector(`#${makeId("easyScholarSecret")}`)
+    ?.addEventListener("blur", () => onPrefsEvents("updateEasyScholarSecret"));
+  doc
+    .querySelector(`#${makeId("easyScholarTest")}`)
+    ?.addEventListener("command", () => onPrefsEvents("testEasyScholar"));
+  doc
+    .querySelector(`#${makeId("easyScholarClear")}`)
+    ?.addEventListener("command", () => onPrefsEvents("clearEasyScholar"));
+  doc
+    .querySelector(`#${makeId("easyScholarCacheTTL")}`)
+    ?.addEventListener("change", () => onPrefsEvents("setEasyScholarTTL"));
 
   doc
     .querySelector(`#${makeId("enableComment")}`)
@@ -306,6 +324,10 @@ function updatePrefsPaneDefault() {
   onPrefsEvents("setSentenceSecret", false);
   onPrefsEvents("setWordSecret", false);
   onPrefsEvents("setEnableAutoTagAnnotation", false);
+  const secretInput = addon.data.prefs.window?.document.querySelector(
+    `#${makeId("easyScholarSecret")}`,
+  ) as HTMLInputElement | null;
+  if (secretInput) secretInput.value = getEasyScholarSecret();
 }
 
 function onPrefsEvents(type: string, fromElement: boolean = true) {
@@ -346,6 +368,44 @@ function onPrefsEvents(type: string, fromElement: boolean = true) {
         (doc.querySelector(`#${makeId("overwriteTitleTranslation")}`) as XUL.Checkbox)
           .checked,
       );
+      break;
+    case "updateEasyScholarSecret":
+      {
+        const input = doc.querySelector(
+          `#${makeId("easyScholarSecret")}`,
+        ) as HTMLInputElement;
+        setEasyScholarSecret(input.value);
+        input.value = getEasyScholarSecret();
+      }
+      break;
+    case "clearEasyScholar":
+      clearEasyScholarSecret();
+      (doc.querySelector(`#${makeId("easyScholarSecret")}`) as HTMLInputElement).value = "";
+      break;
+    case "setEasyScholarTTL":
+      {
+        const input = doc.querySelector(
+          `#${makeId("easyScholarCacheTTL")}`,
+        ) as HTMLInputElement;
+        const value = Number(input.value);
+        if (!Number.isFinite(value) || value <= 0) {
+          input.value = String(getPref("easyScholarCacheTTL"));
+        } else {
+          setPref("easyScholarCacheTTL", value);
+        }
+      }
+      break;
+    case "testEasyScholar":
+      {
+        const secret = (
+          doc.querySelector(`#${makeId("easyScholarSecret")}`) as HTMLInputElement
+        ).value.trim();
+        void testEasyScholarSecret(secret).then((success) => {
+          addon.data.prefs.window?.alert(
+            success ? getString("easyScholar-test-success") : getString("easyScholar-test-failed"),
+          );
+        });
+      }
       break;
     case "setAutoTranslateAnnotation":
       {

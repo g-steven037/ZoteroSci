@@ -31,6 +31,39 @@
       native="true"
       preference="__prefsPrefix__.overwriteTitleTranslation"
     />
+    <separator class="thin" />
+    <label><html:h3 data-l10n-id="pref-easyScholar-title"></html:h3></label>
+    <checkbox
+      id="__addonRef__-enableAutoPublicationRank"
+      data-l10n-id="pref-easyScholar-enableAuto"
+      native="true"
+      preference="__prefsPrefix__.enableAutoPublicationRank"
+    />
+    <hbox align="center">
+      <label data-l10n-id="pref-easyScholar-secret"></label>
+      <html:input
+        id="__addonRef__-easyScholarSecret"
+        type="password"
+        autocomplete="off"
+      ></html:input>
+      <button
+        id="__addonRef__-easyScholarTest"
+        data-l10n-id="pref-easyScholar-test"
+      ></button>
+      <button
+        id="__addonRef__-easyScholarClear"
+        data-l10n-id="pref-easyScholar-clear"
+      ></button>
+    </hbox>
+    <hbox align="center">
+      <label data-l10n-id="pref-easyScholar-ttl"></label>
+      <html:input
+        id="__addonRef__-easyScholarCacheTTL"
+        type="number"
+        min="1"
+        preference="__prefsPrefix__.easyScholarCacheTTL"
+      ></html:input>
+    </hbox>
     <vbox>
       <checkbox
         id="__addonRef__-enableComment"
