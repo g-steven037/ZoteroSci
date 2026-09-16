@@ -77,22 +77,42 @@ function titleTask(item: TitleItem, title: string, service: string, sourceHash: 
 }
 
 async function translateOne(itemID: number): Promise<void> {
-  if (!getPref("enableAutoTitleTranslation")) return;
+  if (!getPref("enableAutoTitleTranslation")) {
+    ztoolkit.log("ZoteroSci title auto-translation disabled", itemID);
+    return;
+  }
 
-  await new Promise<void>((resolve) => setTimeout(resolve, 100));
+  await new Promise<void>((resolve) => setTimeout(resolve, 300));
   const item = Zotero.Items.get(itemID) as TitleItem | false;
-  if (!isEligibleNewTitleItem(item)) return;
+  if (!isEligibleNewTitleItem(item)) {
+    ztoolkit.log("ZoteroSci skipped ineligible new item", itemID);
+    return;
+  }
 
   const title = String(item.getField("title") ?? "").trim();
   const language = item.getField("language");
-  if (getPref("skipChineseTitle") && isChineseLanguage(language)) return;
+  if (getPref("skipChineseTitle") && isChineseLanguage(language)) {
+    ztoolkit.log("ZoteroSci skipped Chinese-language title", itemID, language);
+    return;
+  }
 
   const existing = getExtra(item, TITLE_FIELD);
   const sourceHash = hashTitle(title);
-  if (existing && !getPref("overwriteTitleTranslation")) return;
-  if (existing && getExtra(item, TITLE_SOURCE_HASH_FIELD) === sourceHash) return;
+  if (existing && !getPref("overwriteTitleTranslation")) {
+    ztoolkit.log("ZoteroSci skipped existing Chinese title", itemID);
+    return;
+  }
+  if (existing && getExtra(item, TITLE_SOURCE_HASH_FIELD) === sourceHash) {
+    ztoolkit.log("ZoteroSci skipped unchanged title", itemID);
+    return;
+  }
 
   const service = selectedService();
+  ztoolkit.log("ZoteroSci starting title translation", {
+    itemID,
+    service,
+    title: title.slice(0, 120),
+  });
   const task = titleTask(item, title, service, sourceHash);
   if (!task) return;
 
@@ -116,6 +136,7 @@ async function translateOne(itemID: number): Promise<void> {
     setExtra(currentItem, TITLE_SOURCE_HASH_FIELD, sourceHash);
     setExtra(currentItem, TITLE_SERVICE_FIELD, service);
     currentItem.saveTx?.();
+    ztoolkit.log("ZoteroSci saved Chinese title", itemID);
   } catch (error) {
     ztoolkit.log("ZoteroSci automatic title translation error", error);
   }

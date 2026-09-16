@@ -1,5 +1,6 @@
 pref("__prefsPrefix__.enableAuto", true);
 pref("__prefsPrefix__.enableAutoTitleTranslation", false);
+pref("__prefsPrefix__.autoTitleTranslationConfigured", false);
 pref("__prefsPrefix__.skipChineseTitle", true);
 pref("__prefsPrefix__.overwriteTitleTranslation", false);
 pref("__prefsPrefix__.enableDict", true);

@@ -5,7 +5,7 @@ export function registerNotify(types: _ZoteroTypes.Notifier.Type[]) {
         unregisterNotify(notifyID);
         return;
       }
-      addon.hooks.onNotify(...data);
+      await addon.hooks.onNotify(...data);
     },
   };
 

@@ -9,6 +9,7 @@ declare namespace _ZoteroTypes {
     PluginPrefsMap: {
       "enableAuto": boolean;
       "enableAutoTitleTranslation": boolean;
+      "autoTitleTranslationConfigured": boolean;
       "skipChineseTitle": boolean;
       "overwriteTitleTranslation": boolean;
       "enableDict": boolean;

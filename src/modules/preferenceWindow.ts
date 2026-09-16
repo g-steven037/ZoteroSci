@@ -331,6 +331,7 @@ function onPrefsEvents(type: string, fromElement: boolean = true) {
         (doc.querySelector(`#${makeId("enableAutoTitleTranslation")}`) as XUL.Checkbox)
           .checked,
       );
+      setPref("autoTitleTranslationConfigured", true);
       break;
     case "setSkipChineseTitle":
       setPref(

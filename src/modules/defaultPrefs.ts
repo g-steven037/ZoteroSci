@@ -4,6 +4,12 @@ import { services } from "./services";
 
 export function setDefaultPrefSettings() {
   const isZhCN = Zotero.locale === "zh-CN";
+  // The title auto-translation feature is enabled on first startup. Once the
+  // user changes it in Preferences, preserve that explicit choice.
+  if (!getPref("autoTitleTranslationConfigured")) {
+    setPref("enableAutoTitleTranslation", true);
+    setPref("autoTitleTranslationConfigured", true);
+  }
   const servicesIds = services.getAllServices().map((service) => service.id);
   if (!servicesIds.includes((getPref("translateSource") as string) || "")) {
     // Google Translate is not accessible in China mainland

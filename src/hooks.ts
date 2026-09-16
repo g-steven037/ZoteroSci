@@ -127,14 +127,20 @@ function onShutdown(): void {
  * This function is just an example of dispatcher for Notify events.
  * Any operations should be placed in a function to keep this function clear.
  */
-function onNotify(
+async function onNotify(
   event: string,
   type: string,
   ids: Array<string | number>,
   extraData: { [key: string]: any },
 ) {
   if (event === "add" && type === "item") {
-    void translateNewTitles(ids.map(Number));
+    const itemIDs = ids.map(Number);
+    ztoolkit.log("ZoteroSci item-add notification", {
+      itemIDs,
+      enabled: getPref("enableAutoTitleTranslation"),
+      service: getPref("translateSource"),
+    });
+    await translateNewTitles(itemIDs);
     if (
       !getPref("enableAnnotationFromSyncTranslation") &&
       extraData?.skipAutoSync
